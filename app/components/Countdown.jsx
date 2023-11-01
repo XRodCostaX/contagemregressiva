@@ -1,39 +1,36 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-const Countdown = ({ targetDate }) => {
-    const calculateTimeLeft = () => {
-        const difference = new Date(targetDate) - new Date();
-        if (difference > 0) {
-            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor(
-                (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-            );
-            const minutes = Math.floor(
-                (difference % (1000 * 60 * 60)) / (1000 * 60)
-            );
-            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-            return { days, hours, minutes, seconds };
-        }
-        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-    };
+const Countdown = () => {
+    const targetDate = new Date('2023-12-22T18:00:00').getTime(); // Data e hora-alvo em milissegundos
+    const currentDate = new Date().getTime(); // Data e hora atuais em milissegundos
+    const timeRemaining = targetDate - currentDate; // Tempo restante em milissegundos
 
-    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+    const [countdown, setCountdown] = useState(timeRemaining);
 
     useEffect(() => {
-        const timer = setInterval(() => {
-            setTimeLeft(calculateTimeLeft());
+        const countdownInterval = setInterval(() => {
+            if (countdown > 0) {
+                setCountdown(countdown - 1000); // Diminuir 1 segundo a cada 1000 milissegundos
+            }
         }, 1000);
-        return () => clearInterval(timer);
-    }, []);
+
+        return () => clearInterval(countdownInterval);
+    }, [countdown]);
+
+    const days = Math.floor(countdown / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
+        (countdown % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    const minutes = Math.floor((countdown % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((countdown % (1000 * 60)) / 1000);
 
     return (
-        <div className="text-center">
-            <h2 className="text-2xl font-bold">Contagem Regressiva</h2>
-            <div className="text-4xl font-semibold mt-4">
-                {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m{' '}
-                {timeLeft.seconds}s
-            </div>
+        <div className="text-4xl  text-slate-950 text-center border-8 rounded-2xl border-emerald-500 h-56 p-6">
+            <h1 className="my-6 text-orange-700">
+                CONTAGEM REGRESSIVA PARA O RECESSO
+            </h1>
+            {days} dias, {hours} horas, {minutes} minutos, {seconds} segundos
         </div>
     );
 };
